@@ -1,30 +1,32 @@
-import { App, createApp, useAttrs } from 'vue';
-import ElementPlus from 'element-plus';
-import '@/assets/style/base.scss';
-import 'element-plus/dist/index.css';
-import 'element-plus/theme-chalk/dark/css-vars.css';
-import router from './router/index';
-import Appv from './App.vue';
-import * as ElementPlusIconsVue from '@element-plus/icons-vue';
-import axios from './utils/request';
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 import { createPinia } from 'pinia';
-import VXETable from 'vxe-table';
-import 'vxe-table/lib/style.css';
-import './assets/style/animate.min.css';
+import ElementPlus from 'element-plus';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import 'element-plus/dist/index.css';
+import './assets/scss/element-var.scss';
+import '@/assets/scss/layout.scss';
+import '@/assets/scss/form.scss';
+import AKDesignForm from './views/designForm/index';
+// 实例化 Pinia
+const pinia = createPinia();
+const app = createApp(App);
+app
+  .use(pinia)
+  .use(ElementPlus, {
+    locale: zhCn
+  })
+  .use(router)
+  .use(AKDesignForm)
+  .mount('#app');
+// 全局注册icon
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 
-let app = createApp(Appv);
-
-function useTable(app: App) {
-  app.use(VXETable);
-  // 给 vue 实例挂载内部对象，例如：
-  app.config.globalProperties.$XModal = VXETable.modal
-  app.config.globalProperties.$XPrint = VXETable.print
-  app.config.globalProperties.$XSaveFile = VXETable.saveFile
-  app.config.globalProperties.$XReadFile = VXETable.readFile
-}
-app.config.globalProperties.$http = axios;
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
-const pinia = createPinia();
-app.use(ElementPlus).use(pinia).use(router).use(useTable).mount('#app');
+
+// 注册一个全局组件用于自定义组件测试
+import componentTest from '@/docs/components/componentTest.vue';
+app.component('ComponentTest', componentTest);

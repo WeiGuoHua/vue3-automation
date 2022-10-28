@@ -1,75 +1,49 @@
-import { createRouter, createWebHistory } from 'vue-router';
-// 全局组件
-import Home from '../view/Home/Home.vue';
-import Login from '../view/Login/Login.vue';
-import Layout from '../view/Layout/Layout.vue';
-// 普通组件
-import DoctorList from '../view/Common/DoctorList/DoctorList.vue';
-import FlashTable from '../view/Common/FlashTable/FlashTable.vue';
-import FlashForm from '../view/Common/FlashForm/FlashForm.vue';
-// 路由
-export const routes = [
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/index',
-    children: [
-      {
-        path: '/index',
-        name: 'CIS首页',
-        icon: 'HomeFilled',
-        component: Home
-      },
-      {
-        path: '/common',
-        name: '常用功能',
-        icon: 'Operation',
-        children: [
-          {
-            path: '/common/list',
-            name: '卡片列表',
-            icon: 'Postcard',
-            component: DoctorList
-          },
-          {
-            path: '/common/flashTable',
-            name: '快速表格',
-            icon: 'List',
-            component: FlashTable
-          },
-          {
-            path: '/common/flashForm',
-            name: '快速表单',
-            icon: 'Tickets',
-            component: FlashForm
-          }
-        ]
-      },
+import { createRouter, createWebHashHistory } from 'vue-router';
+// @ts-ignore
+import routesPage from '~pages';
 
-      {
-        path: '/doctor/orderSettings',
-        name: '医嘱设置',
-        icon: 'Setting',
-        children: [
-          {
-            path: '/doctor/orderSettings/remarksMaintenance',
-            name: '备注维护',
-            icon: 'DataBoard',
-            component: DoctorList
-          }
-        ]
-      }
-    ]
+console.log(routesPage);
+const routes = [
+  {
+    path: '/test',
+    name: '/test',
+    component: () => import('../views/test.vue')
   },
   {
-    path: '/login',
-    name: '登录',
-    component: Login
+    path: '/layout',
+    redirect: '/',
+    name: 'layout',
+    component: () => import('../components/layout/index.vue'),
+    children: routesPage.filter((item: any) => {
+      return item.name.indexOf('docs') !== 0;
+    })
+  },
+  {
+    path: '/docs',
+    redirect: '/docs',
+    name: 'docs',
+    component: () => import('../docs/components/layout.vue'),
+    children: routesPage.filter((item: any) => {
+      return item.name.indexOf('docs') === 0;
+    })
   }
 ];
-
+// console.log(routes)
+// 配置路由
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+  //history: createWebHistory(),
+  history: createWebHashHistory(),
+  routes: routes
 });
+
+/*router.beforeEach((to: any, from: any) => {
+  /!*const { path: toPath } = to
+      const { path: fromPath } = from
+      if (toPath === fromPath) {
+        return false
+      }*!/
+  //console.log(to)
+  //console.log(from)
+})*/
+
 export default router;
