@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 // @ts-ignore
 import routesPage from '~pages';
 
-console.log(routesPage);
 const routes = [
   {
     path: '/test',
